@@ -1,26 +1,27 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime
-from sqlalchemy.orm import relationship
+from sqlalchemy import ForeignKey
+from sqlalchemy.orm import Mapped, mapped_column, relationship
 from datetime import datetime
 from app.database import Base
+from app.models.product import Product
 
 class Order(Base):
     __tablename__ = "orders"
 
-    id = Column(Integer, primary_key=True, index=True)
-    customer_id = Column(Integer, ForeignKey("customers.id"), nullable=False)
-    status = Column(String, nullable=False, default="pending")
-    created_at = Column(DateTime, default=datetime.utcnow)
+    id : Mapped[int] = mapped_column(primary_key=True, index=True)
+    customer_id : Mapped[int] = mapped_column(ForeignKey("customers.id"))
+    status : Mapped[str] = mapped_column(default="pending")
+    created_at : Mapped[datetime] = mapped_column(default=datetime.utcnow)
 
     customer = relationship("Customer")
-    items = relationship("OrderItem", back_populates="order")
+    items : Mapped[list["OrderItem"]] =relationship(back_populates="order")
 
 class OrderItem(Base):
     __tablename__ = "order_items"
 
-    id = Column(Integer, primary_key=True, index=True)
-    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
-    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
-    quantity = Column(Integer, nullable=False)
+    id: Mapped[int] = mapped_column(primary_key=True, index=True)
+    order_id: Mapped[int] = mapped_column(ForeignKey("orders.id"))
+    product_id: Mapped[int] = mapped_column(ForeignKey("products.id"))
+    quantity: Mapped[int]
 
     order = relationship("Order", back_populates="items")
-    product = relationship("Product")
+    product: Mapped["Product"] = relationship()
