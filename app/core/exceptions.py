@@ -1,5 +1,5 @@
 class NotFoundError(Exception):
-    """when things being asked for doesnt exist"""
+    """base class: when things being asked for doesnt exist"""
     pass
 
 class ProductNotFoundError(NotFoundError):
